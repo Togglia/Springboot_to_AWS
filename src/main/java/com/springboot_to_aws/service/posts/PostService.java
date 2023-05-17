@@ -1,12 +1,17 @@
 package com.springboot_to_aws.service.posts;
 import com.springboot_to_aws.domain.posts.Posts;
 import com.springboot_to_aws.domain.posts.PostsRepository;
+import com.springboot_to_aws.web.dto.PostsListResponseDto;
 import com.springboot_to_aws.web.dto.PostsResponseDto;
 import com.springboot_to_aws.web.dto.PostsSaveRequestDto;
 import com.springboot_to_aws.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class PostService {
@@ -40,5 +45,12 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
 
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc(){
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
